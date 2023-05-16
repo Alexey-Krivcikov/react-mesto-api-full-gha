@@ -1,0 +1,10 @@
+.popup__status_type_err {
+  box-sizing: border-box;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-image: url("../../../../images/reg-err.svg");
+  background-position: center;
+  width: 120px;
+  height: 120px;
+  margin: 60px auto 0;
+}

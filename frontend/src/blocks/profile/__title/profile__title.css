@@ -1,0 +1,11 @@
+.profile__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+@media all and (max-width: 450px) {
+  .profile__title {
+    margin-left: 28px;
+  }
+}

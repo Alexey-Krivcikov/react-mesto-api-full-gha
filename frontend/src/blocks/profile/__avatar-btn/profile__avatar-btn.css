@@ -1,0 +1,11 @@
+.profile__avatar-btn {
+  outline: none;
+  background-image: url(../../../images/avatar-btn.svg);
+  width: 26px;
+  height: 26px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  opacity: 0.6;
+
+}

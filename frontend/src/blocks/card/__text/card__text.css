@@ -1,0 +1,7 @@
+.card__text {
+  background-color: #FFFFFF;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}

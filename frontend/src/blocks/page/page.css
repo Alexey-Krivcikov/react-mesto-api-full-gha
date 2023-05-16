@@ -1,0 +1,6 @@
+.page {
+  background-color: #000000;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  z-index: -1;
+}

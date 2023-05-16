@@ -1,0 +1,15 @@
+.login-form__input {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #CCCCCC;
+  border: 0;
+  padding: 0;
+  border-bottom: 2px solid #CCCCCC;
+  background: inherit;
+  height: 27px;
+}
+
+/* .login-form__email:focus {
+} */

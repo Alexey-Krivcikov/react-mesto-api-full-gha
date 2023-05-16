@@ -1,0 +1,6 @@
+.popup__container_type_delete {
+  width: 430px;
+  height: 181px;
+  display: flex;
+  flex-direction: column;
+}
