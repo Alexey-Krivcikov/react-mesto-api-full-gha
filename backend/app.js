@@ -31,7 +31,6 @@ const allowedCors = [
 app.options("*", cors({
   origin: allowedCors,
   credentials: true,
-  exposedHeaders: ["set-cookie"],
 }));
 
 app.use(cors({
