@@ -22,7 +22,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 
 const allowedCors = [
   "https://mesto.front.end.nomoredomains.monster",
-  "http://api.mesto.front.end.nomoredomains.monster",
+  "https://api.mesto.front.end.nomoredomains.monster",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:61112",
