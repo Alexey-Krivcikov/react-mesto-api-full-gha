@@ -201,7 +201,7 @@ function App() {
           setEmail(email);
           setPassword("");
           setLoggedIn(true);
-          localStorage.setItem('authorized', 'true');
+          localStorage.setItem('token', 'true');
           navigate("/", { replace: true });
         }
       })
