@@ -140,18 +140,18 @@ function App() {
   }
 
   function signOut() {
-    localStorage.removeItem("token");
+    // localStorage.removeItem("token");
     setLoggedIn(false);
   }
 
 // Функция проверки авторизации
   const tokenCheck = useCallback(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    // const token = localStorage.getItem("token");
+    // if (token) {
       auth
         .checkToken()
         .then((userData) => {
-          if (userData.mail) {
+          if (userData.email) {
             setLoggedIn(true);
             setEmail(userData.email);
             setCurrentUser((data) => ({ ...data, userData }));
@@ -159,7 +159,7 @@ function App() {
           }
         })
         .catch((err) => console.log(err));
-    }
+    // }
   }, [navigate])
 
   React.useEffect(() => {
@@ -199,9 +199,9 @@ function App() {
       .then((data) => {
         if (data.message) {
           setEmail(email);
-          setPassword("");
+          // setPassword("");
           setLoggedIn(true);
-          localStorage.setItem('token', 'true');
+          // localStorage.setItem('token', 'true');
           navigate("/", { replace: true });
         }
       })
