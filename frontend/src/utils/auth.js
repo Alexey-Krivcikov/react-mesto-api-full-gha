@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:3005";
+export const BASE_URL = "http://localhost:3000";
 
 const checkResponse = (res) =>
   res.ok ? res.json() : Promise.reject(`Ошибка: ${res.statusText}`);
