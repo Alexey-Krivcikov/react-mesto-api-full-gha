@@ -23,6 +23,7 @@ const allowedCors = [
   "http://api.mesto.front.end.nomoredomains.monster",
   "http://localhost:3000",
   "http://localhost:3005",
+  "http://localhost:56956",
 ];
 
 app.options("*", cors({

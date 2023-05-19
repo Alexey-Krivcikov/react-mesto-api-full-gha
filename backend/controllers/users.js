@@ -16,10 +16,12 @@ module.exports.login = (req, res, next) => {
         maxAge: 3600000,
         httpOnly: true,
       })
-        .send({ data: email })
+        .send({
+          data: email,
+          message: "Успешная авторизация",
+        })
         .end();
     })
-    .send({ message: "Успешная авторизация" })
     .catch(next);
 };
 

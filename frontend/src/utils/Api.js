@@ -2,76 +2,86 @@ class Api {
   constructor(options) {
     this._baseUrl = options.baseUrl;
     this._headers = options.headers;
+    this._credentials = options.credentials;
   }
 
   _checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
+
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  _request(url, options) {
-    return fetch(url, options).then(this._checkResponse);
+  _request(endpoint, options) {
+    return fetch(`${this._baseUrl}${endpoint}`, options).then(this._checkResponse);
   }
 
   getUserInfo() {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return this._request("/users/me", {
+      credentials: this._credentials,
       headers: this._headers,
-      credentials: 'include',
-    }).then(this._checkResponse);
-  }
-
-  getInitialCards() {
-    return this._request(`${this._baseUrl}/cards`, {
-      headers: this._headers,
-      credentials: 'include',
     });
   }
 
-  setUserInfo(userData) {
-    return this._request(`${this._baseUrl}/users/me`, {
+  getInitialCards() {
+    return this._request("/cards", {
+      credentials: this._credentials,
       headers: this._headers,
+    });
+  }
+
+  setUserInfo({ name, about }) {
+    return this._request("/users/me", {
       method: "PATCH",
-      credentials: 'include',
+      credentials: this._credentials,
+      headers: this._headers,
       body: JSON.stringify({
-        name: userData.name,
-        about: userData.about,
+        name,
+        about,
       }),
     });
   }
 
-  addNewCard(cardData) {
-    return this._request(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+  addNewCard({ name, link}) {
+    return this._request("/cards", {
       method: "POST",
-      credentials: 'include',
+      credentials: this._credentials,
+      headers: this._headers,
       body: JSON.stringify({
-        name: cardData.name,
-        link: cardData.link,
+        name: name,
+        link: link,
       }),
     });
   }
 
   deleteCard(cardId) {
-    return this._request(`${this._baseUrl}/cards/${cardId}`, {
-      headers: this._headers,
+    return this._request(`/cards/${cardId}`, {
       method: "DELETE",
-      credentials: 'include',
+      credentials: this._credentials,
+      headers: this._headers,
     });
   }
 
-  setAvatar(data) {
-    return this._request(`${this._baseUrl}/users/me/avatar`, {
-      headers: this._headers,
+  setAvatar({ avatar }) {
+    return this._request("/users/me/avatar", {
       method: "PATCH",
-      credentials: 'include',
+      credentials: this._credentials,
+      headers: this._headers,
       body: JSON.stringify({
-        avatar: data.avatar,
+        avatar: avatar,
       }),
     });
   }
 
+  changeLikeCardStatus(cardId, isLiked) {
+    return this._request(`/cards/${cardId}/likes`, {
+      method: `${isLiked ? "PUT" : "DELETE"}`,
+      credentials: this._credentials,
+      headers: this._headers,
+    });
+  }
+// 
   addLike(cardId) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       headers: this._headers,
@@ -79,19 +89,11 @@ class Api {
       credentials: 'include',
     });
   }
-
+// 
   deleteLike(cardId) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       headers: this._headers,
       method: "DELETE",
-      credentials: 'include',
-    });
-  }
-
-  changeLikeCardStatus(cardId, isLiked) {
-    return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-      headers: this._headers,
-      method: isLiked ? "PUT" : "DELETE",
       credentials: 'include',
     });
   }
@@ -104,6 +106,7 @@ const api = new Api({
     // authorization: "13de05b0-eaab-40cb-aa9f-faea16b25706",
     "Content-Type": "application/json",
   },
+  credentials: 'include',
 });
 
 export default api;

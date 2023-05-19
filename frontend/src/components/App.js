@@ -38,6 +38,76 @@ function App() {
 
   const navigate = useNavigate();
 
+  // Функция проверки авторизации
+  const tokenCheck = useCallback(() => {
+      const authorized = localStorage.getItem('authorized');
+      if (authorized) {
+        auth
+          .checkToken()
+          .then((userData) => {
+            if (userData.email) {
+              setLoggedIn(true);
+              setEmail(userData.email);
+              setCurrentUser((data) => ({ ...data, userData }));
+              navigate("/", { replace: true });
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    }, [navigate])
+
+  React.useEffect(() => {
+    tokenCheck();
+    loggedIn &&
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userInfo, cards]) => {
+          setCards(cards.reverse());
+          setCurrentUser(userInfo);
+        })
+        .catch((err) => console.log(err));
+  }, [loggedIn, tokenCheck]);
+
+  const handleSubmitRegister = (e) => {
+    e.preventDefault();
+    return auth
+      .register(email, password)
+      .then((res) => {
+        if (res) {
+          setRegisterInfo("Вы успешно зарегистрировались!");
+          setRegisterStatus(true);
+          navigate("/sign-in", { replace: true });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setRegisterInfo("Что-то пошло не так! Попробуйте ещё раз.");
+      })
+      .finally(() => {
+        handleRegister();
+      });
+  };
+
+  const handleSubmitLogin = (e) => {
+    e.preventDefault();
+    auth
+      .authorize(email, password)
+      .then((data) => {
+        if (data.message) {
+          setLoggedIn(true);
+          setEmail(email);
+          // setPassword("");
+          localStorage.setItem('authorized', 'true');
+          navigate("/", { replace: true });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setRegisterInfo("Что-то пошло не так! Попробуйте ещё раз.");
+        handleRegister();
+      });
+  };
+
+
   function handleEditProfileClick() {
     SetEditProfilePopupOpen(true);
   }
@@ -143,74 +213,6 @@ function App() {
     // localStorage.removeItem("token");
     setLoggedIn(false);
   }
-
-// Функция проверки авторизации
-  const tokenCheck = useCallback(() => {
-    // const token = localStorage.getItem("token");
-    // if (token) {
-      auth
-        .checkToken()
-        .then((userData) => {
-          if (userData.email) {
-            setLoggedIn(true);
-            setEmail(userData.email);
-            setCurrentUser((data) => ({ ...data, userData }));
-            navigate("/", { replace: true });
-          }
-        })
-        .catch((err) => console.log(err));
-    // }
-  }, [navigate])
-
-  React.useEffect(() => {
-    tokenCheck();
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userInfo, cards]) => {
-        setCards(cards);
-        setCurrentUser(userInfo);
-      })
-      .catch((err) => console.log(err));
-  }, [loggedIn, tokenCheck]);
-
-  const handleSubmitRegister = (e) => {
-    e.preventDefault();
-    auth
-      .register(email, password)
-      .then((res) => {
-        if (res) {
-          setRegisterInfo("Вы успешно зарегистрировались!");
-          setRegisterStatus(true);
-          navigate("/sign-in", { replace: true });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setRegisterInfo("Что-то пошло не так! Попробуйте ещё раз.");
-      })
-      .finally(() => {
-        handleRegister();
-      });
-  };
-
-  const handleSubmitLogin = (e) => {
-    e.preventDefault();
-    auth
-      .authorize(email, password)
-      .then((data) => {
-        if (data.message) {
-          setEmail(email);
-          // setPassword("");
-          setLoggedIn(true);
-          // localStorage.setItem('token', 'true');
-          navigate("/", { replace: true });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setRegisterInfo("Что-то пошло не так! Попробуйте ещё раз.");
-        handleRegister();
-      });
-  };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

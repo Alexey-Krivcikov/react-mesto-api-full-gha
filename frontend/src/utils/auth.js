@@ -1,47 +1,50 @@
 export const BASE_URL = "http://localhost:3000";
 
-const checkResponse = (res) =>
-  res.ok ? res.json() : Promise.reject(`Ошибка: ${res.statusText}`);
-
-function request(url, options) {
-  return fetch(url, options).then(checkResponse);
-}
-
-export const register = (email, password) => {
-  return request(`${BASE_URL}/signup`, {
-    method: "POST",
-    credentials: 'include',
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
+export const checkResponse = (res) => {
+  if (res.ok) {
+    return res.json();
+  }
+  return res.json().then((err) => {
+    return Promise.reject(`Ошибка ${res.status}: ${err.message || err.error}`);
   });
 };
 
-export const authorize = (email, password) => {
-  return request(`${BASE_URL}/signin`, {
+export const register = (password, email) => {
+  return fetch(`${BASE_URL}/signup`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password, email }),
+  }).then((res) => {
+    return checkResponse(res);
+  });
+};
+
+export const authorize = (password, email) => {
+  return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     credentials: 'include',
     headers: {
+      Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password }),
-  }).then((data) => {
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      return data;
-    }
-    return;
+    body: JSON.stringify({ password, email }),
+  }).then((res) => {
+    return checkResponse(res);
   });
 };
 
 export const checkToken = () => {
-  return request(`${BASE_URL}/users/me`, {
+  return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     credentials: 'include',
     headers: {
-      "Content-Type": "application/json",
       Accept: "application/json",
+      "Content-Type": "application/json",
     },
-  }).then((data) => data);
+  })
+    .then((res) => res.json())
+    .then((data) => data);
 };
