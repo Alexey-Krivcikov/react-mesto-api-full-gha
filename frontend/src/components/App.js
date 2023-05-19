@@ -1,4 +1,5 @@
 import React from "react";
+import { useCallback } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
@@ -126,21 +127,6 @@ function App() {
       .finally(() => setIsLoading(false));
   }
 
-  React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userInfo, cards]) => {
-        setCards(cards);
-        setCurrentUser(userInfo);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  React.useEffect(() => {
-    tokenCheck();
-  }, []);
-
-  //
-
   function handleEmailChange(e) {
     setEmail(e.target.value);
   }
@@ -158,25 +144,33 @@ function App() {
     setLoggedIn(false);
   }
 
-  function tokenCheck() {
+// Функция проверки авторизации
+  const tokenCheck = useCallback(() => {
     const token = localStorage.getItem("token");
     if (token) {
       auth
-        .checkToken(token)
-        .then((res) => {
-          if (res) {
-            const userData = {
-              email: res.data.email,
-            };
-            setEmail(userData.email);
+        .checkToken()
+        .then((userData) => {
+          if (userData.mail) {
             setLoggedIn(true);
+            setEmail(userData.email);
             setCurrentUser((data) => ({ ...data, userData }));
             navigate("/", { replace: true });
           }
         })
         .catch((err) => console.log(err));
     }
-  }
+  }, [navigate])
+
+  React.useEffect(() => {
+    tokenCheck();
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userInfo, cards]) => {
+        setCards(cards);
+        setCurrentUser(userInfo);
+      })
+      .catch((err) => console.log(err));
+  }, [loggedIn, tokenCheck]);
 
   const handleSubmitRegister = (e) => {
     e.preventDefault();
@@ -203,10 +197,11 @@ function App() {
     auth
       .authorize(email, password)
       .then((data) => {
-        if (data.token) {
+        if (data.message) {
           setEmail(email);
           setPassword("");
           setLoggedIn(true);
+          localStorage.setItem('authorized', 'true');
           navigate("/", { replace: true });
         }
       })

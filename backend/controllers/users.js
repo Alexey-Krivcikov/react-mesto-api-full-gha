@@ -19,6 +19,7 @@ module.exports.login = (req, res, next) => {
         .send({ data: email })
         .end();
     })
+    .send({ message: "Успешная авторизация" })
     .catch(next);
 };
 

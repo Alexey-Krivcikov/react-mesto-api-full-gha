@@ -35,13 +35,13 @@ export const authorize = (email, password) => {
   });
 };
 
-export const checkToken = (token) => {
+export const checkToken = () => {
   return request(`${BASE_URL}/users/me`, {
     method: "GET",
     credentials: 'include',
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
     },
-  });
+  }).then((data) => data);
 };
