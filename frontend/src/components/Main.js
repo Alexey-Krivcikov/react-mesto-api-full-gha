@@ -11,7 +11,21 @@ function Main({
   onCardLike,
   onCardDelete,
 }) {
+  
   const currentUser = React.useContext(CurrentUserContext);
+  const cardsElements = cards.map((card) => {
+    return (
+      <li className="element" key={card._id}>
+        <Card
+              key={card._id}
+              card={card}
+              onCardLike={onCardLike}
+              onCardClick={onCardClick}
+              onCardDelete={onCardDelete}
+            />
+      </li>
+    );
+  });
   return (
     <main className="main page__main">
       <section className="main__profile profile">
@@ -51,15 +65,7 @@ function Main({
         aria-label="Картинки с красивыми местами"
       >
         <ul className="cards__list">
-          {cards.map((card) => (
-            <Card
-              key={card._id}
-              card={card}
-              onCardLike={onCardLike}
-              onCardClick={onCardClick}
-              onCardDelete={onCardDelete}
-            />
-          ))}
+          {cardsElements}
         </ul>
       </section>
     </main>

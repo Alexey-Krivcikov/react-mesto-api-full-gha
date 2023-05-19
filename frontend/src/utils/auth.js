@@ -9,7 +9,7 @@ export const checkResponse = (res) => {
   });
 };
 
-export const register = (password, email) => {
+export const register = ({ password, email }) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
@@ -22,7 +22,7 @@ export const register = (password, email) => {
   });
 };
 
-export const authorize = (password, email) => {
+export const authorize = ({ password, email }) => {
   return fetch(`${BASE_URL}/signin`, {
     method: "POST",
     credentials: 'include',
@@ -48,3 +48,17 @@ export const checkToken = () => {
     .then((res) => res.json())
     .then((data) => data);
 };
+
+export const signout = () => {
+  return fetch(`${BASE_URL}/signout`, {
+    method: "GET",
+    credentials: 'include',
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    })
+    .then((res) => {
+    return checkResponse(res);
+});
+}

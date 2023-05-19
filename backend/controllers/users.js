@@ -51,7 +51,7 @@ module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       res
-        .send({ data: users });
+        .send(users);
     })
     .catch(next);
 };
@@ -62,7 +62,7 @@ module.exports.getUser = (req, res, next) => {
       throw new NotFoundError("Пользователь не найден");
     })
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     .catch(next);
 };
@@ -74,7 +74,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       throw new NotFoundError("Пользователь не найден");
     })
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     .catch(next);
 };
@@ -89,7 +89,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError("Пользователь не найден");
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(new BadRequestError("Некорректные данные при обновлении профиля."));
@@ -109,7 +109,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError("Пользователь не найден");
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(new BadRequestError("Некорректные данные при обновлении аватара."));

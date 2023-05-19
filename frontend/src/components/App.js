@@ -48,8 +48,8 @@ function App() {
             if (userData.email) {
               setLoggedIn(true);
               setEmail(userData.email);
-              setCurrentUser((data) => ({ ...data, userData }));
               navigate("/", { replace: true });
+              setCurrentUser((data) => ({ ...data, userData }));
             }
           })
           .catch((err) => console.log(err));
@@ -61,16 +61,17 @@ function App() {
     loggedIn &&
       Promise.all([api.getUserInfo(), api.getInitialCards()])
         .then(([userInfo, cards]) => {
-          setCards(cards.reverse());
+          setCards(cards);
           setCurrentUser(userInfo);
         })
         .catch((err) => console.log(err));
   }, [loggedIn, tokenCheck]);
 
   const handleSubmitRegister = (e) => {
+    const values = { email, password };
     e.preventDefault();
     return auth
-      .register(email, password)
+      .register(values)
       .then((res) => {
         if (res) {
           setRegisterInfo("Вы успешно зарегистрировались!");
@@ -88,9 +89,10 @@ function App() {
   };
 
   const handleSubmitLogin = (e) => {
+    const values = { email, password };
     e.preventDefault();
     auth
-      .authorize(email, password)
+      .authorize(values)
       .then((data) => {
         if (data.message) {
           setLoggedIn(true);
@@ -107,6 +109,20 @@ function App() {
       });
   };
 
+  function handleSignOut() {
+    auth
+      .signout()
+      .then(() => {
+        localStorage.removeItem('authorized')
+        setLoggedIn(false);
+        navigate('sign-in', { replace: true });
+        setEmail('');
+        setPassword('');
+  })
+    .catch((err) => { 
+      console.log(err);
+  });
+  }
 
   function handleEditProfileClick() {
     SetEditProfilePopupOpen(true);
@@ -132,9 +148,10 @@ function App() {
     setSelectedCard(card);
   }
 
+// Лайк карточки
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
       .changeLikeCardStatus(card._id, !isLiked)
@@ -209,14 +226,9 @@ function App() {
     setIsRegisterPopupOpen(true);
   }
 
-  function signOut() {
-    // localStorage.removeItem("token");
-    setLoggedIn(false);
-  }
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header email={email} signOut={signOut} />
+      <Header email={email} signOut={handleSignOut} />
 
       <Routes>
         <Route
