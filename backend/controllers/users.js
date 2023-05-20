@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
@@ -43,7 +44,7 @@ module.exports.createUser = (req, res, next) => {
         .catch((err) => {
           if (err.code === 11000) {
             next(new ConflictError("Пользователь с таким email уже существует."));
-          } else if (err.name === "ValidationError") {
+          } else if (err instanceof mongoose.Error.ValidationError) {
             next(new BadRequestError("Некорректные данные при создании пользователя."));
           } else {
             next(err);
@@ -96,7 +97,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError("Некорректные данные при обновлении профиля."));
       } else {
         next(err);
@@ -116,7 +117,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError("Некорректные данные при обновлении аватара."));
       } else {
         next(err);

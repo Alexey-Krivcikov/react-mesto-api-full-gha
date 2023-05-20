@@ -21,20 +21,20 @@ const validateLogin = celebrate({
 
 const validateUpdateUserInfo = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
+    about: Joi.string().min(2).max(30).required(),
   }),
 });
 
 const validateUserId = celebrate({
   params: Joi.object().keys({
-    userId: Joi.objectId(),
+    userId: Joi.objectId().required(),
   }),
 });
 
 const validateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(regex),
+    avatar: Joi.string().regex(regex).required(),
   }),
 });
 
@@ -47,7 +47,7 @@ const validateCreateCard = celebrate({
 
 const validateCardId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.objectId(),
+    cardId: Joi.objectId().required(),
   }),
 });
 
